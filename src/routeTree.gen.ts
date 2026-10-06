@@ -15,6 +15,7 @@ import { Route as AdministrationRouteImport } from './routes/administration'
 import { Route as ApplicationsRouteImport } from './routes/applications'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as NewsRouteImport } from './routes/news'
+import { Route as OfficersRouteImport } from './routes/officers'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as ServicesRouteImport } from './routes/services'
 import { Route as WardsRouteImport } from './routes/wards'
@@ -50,6 +51,11 @@ const NewsRoute = NewsRouteImport.update({
   path: '/news',
   getParentRoute: () => rootRouteImport,
 } as any)
+const OfficersRoute = OfficersRouteImport.update({
+  id: '/officers',
+  path: '/officers',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PrivacyRoute = PrivacyRouteImport.update({
   id: '/privacy',
   path: '/privacy',
@@ -78,6 +84,7 @@ export interface FileRoutesByFullPath {
   '/applications': typeof ApplicationsRoute
   '/contact': typeof ContactRoute
   '/news': typeof NewsRoute
+  '/officers': typeof OfficersRoute
   '/privacy': typeof PrivacyRoute
   '/services': typeof ServicesRoute
   '/wards': typeof WardsRoute
@@ -90,6 +97,7 @@ export interface FileRoutesByTo {
   '/applications': typeof ApplicationsRoute
   '/contact': typeof ContactRoute
   '/news': typeof NewsRoute
+  '/officers': typeof OfficersRoute
   '/privacy': typeof PrivacyRoute
   '/services': typeof ServicesRoute
   '/wards': typeof WardsRoute
@@ -103,6 +111,7 @@ export interface FileRoutesById {
   '/applications': typeof ApplicationsRoute
   '/contact': typeof ContactRoute
   '/news': typeof NewsRoute
+  '/officers': typeof OfficersRoute
   '/privacy': typeof PrivacyRoute
   '/services': typeof ServicesRoute
   '/wards': typeof WardsRoute
@@ -117,6 +126,7 @@ export interface FileRouteTypes {
     | '/applications'
     | '/contact'
     | '/news'
+    | '/officers'
     | '/privacy'
     | '/services'
     | '/wards'
@@ -129,6 +139,7 @@ export interface FileRouteTypes {
     | '/applications'
     | '/contact'
     | '/news'
+    | '/officers'
     | '/privacy'
     | '/services'
     | '/wards'
@@ -141,6 +152,7 @@ export interface FileRouteTypes {
     | '/applications'
     | '/contact'
     | '/news'
+    | '/officers'
     | '/privacy'
     | '/services'
     | '/wards'
@@ -154,6 +166,7 @@ export interface RootRouteChildren {
   ApplicationsRoute: typeof ApplicationsRoute
   ContactRoute: typeof ContactRoute
   NewsRoute: typeof NewsRoute
+  OfficersRoute: typeof OfficersRoute
   PrivacyRoute: typeof PrivacyRoute
   ServicesRoute: typeof ServicesRoute
   WardsRoute: typeof WardsRoute
@@ -204,6 +217,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof NewsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/officers': {
+      id: '/officers'
+      path: '/officers'
+      fullPath: '/officers'
+      preLoaderRoute: typeof OfficersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/privacy': {
       id: '/privacy'
       path: '/privacy'
@@ -242,6 +262,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApplicationsRoute: ApplicationsRoute,
   ContactRoute: ContactRoute,
   NewsRoute: NewsRoute,
+  OfficersRoute: OfficersRoute,
   PrivacyRoute: PrivacyRoute,
   ServicesRoute: ServicesRoute,
   WardsRoute: WardsRoute,
