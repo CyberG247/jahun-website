@@ -1,0 +1,9 @@
+import { createFileRoute } from '@tanstack/react-router';
+import { useQuery } from '@tanstack/react-query';
+import { supabase } from '@/integrations/supabase/client';
+import { ShieldCheck,ShieldX } from 'lucide-react';
+import { PageIntro } from '@/components/portal-shell';
+import { pageHead } from '@/lib/portal-data';
+import { z } from 'zod';
+export const Route=createFileRoute('/verify/$certificateId')({head:()=>pageHead('Verify a certificate','Check the authenticity of a council-issued Jahun business premises certificate.'),component:Verify});
+function Verify(){const{certificateId}=Route.useParams();const query=useQuery({queryKey:['certificate',certificateId],queryFn:async()=>{if(!z.string().uuid().safeParse(certificateId).success)return null;const{data,error}=await supabase.from('certificates').select('id,business_name,ward,issued_at').eq('id',certificateId).maybeSingle();if(error)throw error;return data;}});return <main id="main"><PageIntro eyebrow="PUBLIC AUTHENTICITY CHECK" title="Certificate verification" description="Only certificates formally issued by the council can be verified."/><section className="site-width page-body text-center">{query.isPending?<p>Checking certificate…</p>:query.isError?<p role="alert">Verification is temporarily unavailable. Please retry.</p>:query.data?<><ShieldCheck className="mx-auto text-primary" size={48}/><h2 className="mt-5 text-xl font-semibold">Valid council certificate</h2><p className="mt-4">{query.data.business_name}</p><p className="mt-2 text-muted-foreground">{query.data.ward} ward · Issued {new Date(query.data.issued_at).toLocaleDateString('en-GB')}</p></>:<><ShieldX className="mx-auto text-destructive" size={48}/><h2 className="mt-5 text-xl font-semibold">Certificate not found</h2><p className="mt-3 text-muted-foreground">This reference is invalid, revoked or has not been issued by the council.</p></>}</section></main>}
