@@ -1,0 +1,9 @@
+import { createFileRoute } from '@tanstack/react-router';
+import { useState } from 'react';
+import { MapPin,ArrowUpRight } from 'lucide-react';
+import { PageIntro } from '@/components/portal-shell';
+import { Button } from '@/components/ui/button';
+import { Dialog,DialogContent,DialogHeader,DialogTitle,DialogDescription } from '@/components/ui/dialog';
+import { pageHead,wards } from '@/lib/portal-data';
+export const Route=createFileRoute('/wards')({head:()=>pageHead('Wards & districts','Explore Jahun’s eleven administrative wards and community directory.'),component:Wards});
+function Wards(){const[selected,setSelected]=useState<string|null>(null);return <main id="main"><PageIntro eyebrow="ELEVEN WARDS. ONE COMMUNITY." title="Wards & districts" description="Discover the communities served by Jahun Local Government Council."/><section className="site-width page-body"><div className="ward-grid">{wards.map((w,i)=><Button variant="outline" className="ward-card" key={w} onClick={()=>setSelected(w)}><span className="flex justify-between w-full"><MapPin size={19}/><ArrowUpRight size={15}/></span><strong>{w}</strong><span>Ward {String(i+1).padStart(2,'0')}</span></Button>)}</div></section><Dialog open={!!selected} onOpenChange={v=>{if(!v)setSelected(null)}}><DialogContent><DialogHeader><DialogTitle>{selected} ward</DialogTitle><DialogDescription>Jahun Local Government community directory</DialogDescription></DialogHeader><dl className="divide-y divide-border">{['Ward representative','Primary healthcare centre','Primary schools','Weekly local markets'].map(label=><div className="py-4" key={label}><dt className="text-sm font-semibold">{label}</dt><dd className="text-sm text-muted-foreground mt-1">Awaiting verified council directory</dd></div>)}</dl></DialogContent></Dialog></main>}

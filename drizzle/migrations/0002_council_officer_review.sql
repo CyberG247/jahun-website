@@ -1,0 +1,6 @@
+GRANT UPDATE ON public.service_applications TO authenticated;
+CREATE POLICY officer_update ON public.service_applications FOR UPDATE TO authenticated USING(public.has_role(auth.uid(),'SUPER_ADMIN') OR public.has_role(auth.uid(),'DESK_OFFICER') OR (service='business' AND public.has_role(auth.uid(),'REVENUE_ADMIN'))) WITH CHECK(public.has_role(auth.uid(),'SUPER_ADMIN') OR public.has_role(auth.uid(),'DESK_OFFICER') OR (service='business' AND public.has_role(auth.uid(),'REVENUE_ADMIN')));
+CREATE POLICY revenue_read ON public.service_applications FOR SELECT TO authenticated USING(service='business' AND public.has_role(auth.uid(),'REVENUE_ADMIN'));
+GRANT INSERT ON public.certificates TO authenticated;
+CREATE POLICY officer_issue_certificate ON public.certificates FOR INSERT TO authenticated WITH CHECK((public.has_role(auth.uid(),'SUPER_ADMIN') OR public.has_role(auth.uid(),'REVENUE_ADMIN')) AND EXISTS(SELECT 1 FROM public.service_applications a WHERE a.id=application_id AND a.service='business' AND a.status='APPROVED'));
+CREATE UNIQUE INDEX one_certificate_per_application ON public.certificates(application_id);

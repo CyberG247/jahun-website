@@ -1,0 +1,16 @@
+import { createContext,useContext,useEffect,useState,type ReactNode } from 'react';
+import type { User } from '@supabase/supabase-js';
+import { supabase } from '@/integrations/supabase/client';
+import { lovable } from '@/integrations/lovable';
+import { useQueryClient } from '@tanstack/react-query';
+import { Dialog,DialogContent,DialogHeader,DialogTitle,DialogDescription } from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
+import { z } from 'zod';
+const AuthContext=createContext<{user:User|null;openLogin:()=>void;signOut:()=>void}>({user:null,openLogin:()=>{},signOut:()=>{}});
+export const usePortalAuth=()=>useContext(AuthContext);
+export function PortalAuth({children}:{children:ReactNode}){
+ const [user,setUser]=useState<User|null>(null),[open,setOpen]=useState(false),[signup,setSignup]=useState(false),[message,setMessage]=useState(''),[busy,setBusy]=useState(false);const query=useQueryClient();
+ useEffect(()=>{supabase.auth.getSession().then(({data})=>setUser(data.session?.user||null));const {data}=supabase.auth.onAuthStateChange((_event,session)=>{setUser(session?.user||null);if(session)setOpen(false);});return()=>data.subscription.unsubscribe();},[]);
+ async function signOut(){await query.cancelQueries();query.clear();await supabase.auth.signOut();setUser(null);}
+ return <AuthContext.Provider value={{user,openLogin:()=>{setMessage('');setOpen(true);},signOut}}>{children}<Dialog open={open} onOpenChange={setOpen}><DialogContent><DialogHeader><DialogTitle>{signup?'Create your citizen account':'Citizen sign in'}</DialogTitle><DialogDescription>Jahun Local Government E-Services</DialogDescription></DialogHeader><form className="space-y-4" onSubmit={async e=>{e.preventDefault();setMessage('');const f=new FormData(e.currentTarget);const valid=z.object({email:z.string().email(),password:z.string().min(8).max(100)}).safeParse({email:f.get('email'),password:f.get('password')});if(!valid.success){setMessage('Enter a valid email and a password of at least 8 characters.');return;}setBusy(true);const result=signup?await supabase.auth.signUp({...valid.data,options:{emailRedirectTo:window.location.origin}}):await supabase.auth.signInWithPassword(valid.data);setBusy(false);if(result.error)setMessage(result.error.message);else if(signup&&!result.data.session)setMessage('Check your email to confirm your account before signing in.');}}><label className="field-label">Email address<input name="email" type="email" required maxLength={255} className="field" autoComplete="email"/></label><label className="field-label">Password<input name="password" type="password" required minLength={8} maxLength={100} className="field" autoComplete={signup?'new-password':'current-password'}/></label><p role="status" className="text-sm text-muted-foreground">{message}</p><Button className="w-full" disabled={busy}>{busy?'Please wait…':signup?'Create account':'Sign in'}</Button></form><Button variant="outline" onClick={async()=>{const r=await lovable.auth.signInWithOAuth('google',{redirect_uri:window.location.origin});if(r.error)setMessage(r.error.message);}}>Continue with Google</Button><Button variant="link" onClick={()=>{setSignup(!signup);setMessage('');}}>{signup?'Already registered? Sign in':'New here? Create an account'}</Button></DialogContent></Dialog></AuthContext.Provider>;
+}

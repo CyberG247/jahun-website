@@ -1,0 +1,7 @@
+import { createFileRoute,Link } from '@tanstack/react-router';
+import { PageIntro } from '@/components/portal-shell';
+import { Button } from '@/components/ui/button';
+import { pageHead } from '@/lib/portal-data';
+import fields from '@/assets/jahun-fields.jpg';
+export const Route=createFileRoute('/about')({head:()=>pageHead('About Jahun','Discover Jahun in Jigawa State: agricultural communities, local markets and eleven administrative wards.'),component:About});
+function About(){return <main id="main"><PageIntro eyebrow="OUR PEOPLE. OUR HOME." title="About Jahun" description="An agricultural heartland in Jigawa State, Nigeria — connected by community, enterprise and shared ambition."/><section className="site-width page-body"><img src={fields} width={1920} height={1024} loading="lazy" className="w-full h-72 object-cover rounded-md" alt="Illustrative northern Nigerian farmland"/><div className="content-prose mt-8"><h2>Agriculture, community and opportunity</h2><p>Jahun’s communities are rooted in farming, market trade and local enterprise. Our council’s development priorities include education, rural access, reliable healthcare and municipal services.</p><h2>Eleven wards, one council</h2><p>The council serves Aujara, Gangawa, Gauza, Gunka, Harɓo Sabuwa, Harɓo Tsohuwa, Idanduna, Jabarna, Jahun, Kale and Kanwa.</p><Button asChild className="mt-6"><Link to="/wards">Discover our wards</Link></Button></div></section></main>}
