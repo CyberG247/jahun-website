@@ -14,16 +14,161 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      certificates: {
+        Row: {
+          application_id: string
+          business_name: string
+          id: string
+          issued_at: string
+          revoked: boolean
+          ward: string
+        }
+        Insert: {
+          application_id: string
+          business_name: string
+          id?: string
+          issued_at?: string
+          revoked?: boolean
+          ward: string
+        }
+        Update: {
+          application_id?: string
+          business_name?: string
+          id?: string
+          issued_at?: string
+          revoked?: boolean
+          ward?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "certificates_application_id_fkey"
+            columns: ["application_id"]
+            isOneToOne: false
+            referencedRelation: "service_applications"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      citizens: {
+        Row: {
+          created_at: string
+          email: string | null
+          full_name: string
+          id: string
+          phone: string
+          ward: string
+        }
+        Insert: {
+          created_at?: string
+          email?: string | null
+          full_name: string
+          id: string
+          phone: string
+          ward: string
+        }
+        Update: {
+          created_at?: string
+          email?: string | null
+          full_name?: string
+          id?: string
+          phone?: string
+          ward?: string
+        }
+        Relationships: []
+      }
+      service_applications: {
+        Row: {
+          citizen_id: string
+          created_at: string
+          details: Json
+          document_path: string | null
+          full_name: string
+          id: string
+          phone: string
+          service: string
+          status: string
+          ward: string
+        }
+        Insert: {
+          citizen_id: string
+          created_at?: string
+          details?: Json
+          document_path?: string | null
+          full_name: string
+          id?: string
+          phone: string
+          service: string
+          status?: string
+          ward: string
+        }
+        Update: {
+          citizen_id?: string
+          created_at?: string
+          details?: Json
+          document_path?: string | null
+          full_name?: string
+          id?: string
+          phone?: string
+          service?: string
+          status?: string
+          ward?: string
+        }
+        Relationships: []
+      }
+      user_roles: {
+        Row: {
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
+      wards: {
+        Row: {
+          contact_phone: string | null
+          councilor_name: string | null
+          id: string
+          name: string
+        }
+        Insert: {
+          contact_phone?: string | null
+          councilor_name?: string | null
+          id?: string
+          name: string
+        }
+        Update: {
+          contact_phone?: string | null
+          councilor_name?: string | null
+          id?: string
+          name?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "CITIZEN" | "DESK_OFFICER" | "REVENUE_ADMIN" | "SUPER_ADMIN"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +295,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["CITIZEN", "DESK_OFFICER", "REVENUE_ADMIN", "SUPER_ADMIN"],
+    },
   },
 } as const
