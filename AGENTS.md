@@ -16,3 +16,4 @@
 - Authenticate submission and private-document RPCs with requireSupabaseAuth and user-scoped clients; do not bypass RLS for ordinary civic workflows.
 - Keep citizen roles separate in user_roles and reserve council approvals and certificate issuance for server-authorized officers.
 - Use private civic-documents storage with user-prefix access and expiring URLs to protect citizen credentials.
+- Use user-scoped officer RPCs and role-constrained RLS for council review and QR certificate issuance; certificates never expose citizen identity or banking data publicly.
